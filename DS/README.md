@@ -145,7 +145,98 @@ gcc lib.c main.c -o main
 ./main.exe
 ```
 
+
+# Fila com Encadeamento
+
+### Estrutura `Node`
+Representa um nó da fila, contendo um valor e um ponteiro para o próximo nó.
+
+```c
+typedef struct Node {
+    struct Node *next;
+    int value;
+} Node;
+```
+
+### Estrutura `Queue`
+Representa a fila, contendo ponteiros para o primeiro (`head`) e o último (`last`) nós.
+
+```c
+typedef struct Queue {
+    struct Node *head;
+    struct Node *last;
+} Queue;
+```
+
+---
+
+## Funções
+
+### Inicialização
+
+#### Inicializar Nó
+Cria um novo nó com o valor especificado.
+
+```c
+Node *init_node(int value);
+```
+
+#### Inicializar Fila
+Cria e inicializa uma nova fila vazia.
+
+```c
+Queue *init_queue();
+```
+
+---
+
+### Operações na Fila
+
+#### Enfileirar (`enqueue`)
+Adiciona um elemento ao final da fila.
+
+```c
+void enqueue(Queue **queue, int value);
+```
+
+#### Desenfileirar (`dequeue`)
+Remove e retorna o elemento no início da fila. 
+
+```c
+int dequeue(Queue **queue);
+```
+
+---
+
+### Exibição
+
+#### Imprimir Fila
+Percorre e imprime todos os valores da fila a partir do nó especificado.
+
+```c
+void print(Node *node);
+```
+
+---
+
+## Como Compilar e Executar
+
+1. Clone o repositório e navegue até a pasta do projeto:
+    ```bash
+    git clone https://github.com/Yanderalves/DSA
+    cd DSA/DS/Queue
+    ```
+
+2. Compile o código:
+    ```bash
+    gcc lib.c main.c -o main
+    ```
+
+3. Execute o programa:
+    ```bash
+    ./main.exe
+    ```
+
+
 ## Licença
 Este projeto está licenciado sob a Licença MIT. Consulte o arquivo `LICENSE` para mais detalhes.
-
-
