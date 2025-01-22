@@ -54,7 +54,7 @@
 
 4. Feito. O código vai executar. Mas lembra de de descomentar o teste que tu quer executar. (Executar um teste de cada vez, pois pode ocorrer de o segundo algoritmo não conseguir buscar o array que acabara de ser gravado no arquivo, e ele vir com o array todo preenchido por 0)
 
-![image.png](../.github/image.png)
+![image.png](/.github/image.png)
 
 # Árvore Binária
 
