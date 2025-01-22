@@ -20,7 +20,7 @@ LinkedList *init_linked_list()
     return linked_list;
 }
 
-void insert(LinkedList *linked_list, int value)
+void insert_at_end(LinkedList *linked_list, int value)
 {
     Node *node = create_node(value);
 
@@ -38,6 +38,24 @@ void insert(LinkedList *linked_list, int value)
     }
 }
 
+void insert_at_beginning(LinkedList *linked_list, int value)
+{
+    Node *node = create_node(value);
+
+    if (linked_list->init == NULL)
+    {
+        linked_list->init = node;
+        linked_list->end = node;
+    }
+    else
+    {
+        Node *aux = linked_list->init;
+
+        aux->prev = node;
+        node->next = aux;
+        linked_list->init = node;
+    }
+}
 void print(Node *node)
 {
     printf("%d\n", node->value);
@@ -50,4 +68,15 @@ void reverse_print(Node *node)
     printf("%d\n", node->value);
     if (node->prev != NULL)
         reverse_print(node->prev);
+}
+
+int search(Node *node, int value)
+{
+    while (node->next != NULL && node->value != value)
+        node = node->next;
+
+    if (node->value == value)
+        return value;
+    else
+        return -1;
 }
