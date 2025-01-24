@@ -38,6 +38,9 @@ int dequeue(Queue **queue)
     if (*queue == NULL)
         return -1;
 
+    if ((*queue)->head->next == NULL)
+        (*queue)->last = NULL;
+
     int value = (*queue)->head->value;
 
     Node *aux = (*queue)->head;
@@ -56,4 +59,11 @@ void print(Node *node)
         printf("%d\n", node->value);
         print(node->next);
     }
+}
+
+bool queue_is_empty(Queue *queue)
+{
+    if (queue->head == NULL)
+        return true;
+    return false;
 }

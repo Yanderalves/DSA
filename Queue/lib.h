@@ -1,3 +1,4 @@
+#include <stdbool.h>
 typedef struct Queue
 {
     struct Node *head;
@@ -17,3 +18,5 @@ void print(Node *node);
 
 Queue *init_queue();
 Node *init_node(int value);
+
+bool queue_is_empty(Queue *queue);
