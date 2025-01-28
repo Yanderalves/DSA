@@ -18,7 +18,7 @@ typedef struct Node
     Color color;
 } Node;
 
-Node *outside();
+Node *create_external();
 
 void left_rotate(Node *x, Node **root, Node *outside);
 void right_rotate(Node *x, Node **root, Node *outside);
