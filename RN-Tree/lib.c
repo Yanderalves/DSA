@@ -223,3 +223,87 @@ void free_RB(Node **root, Node *external)
 
     free(*root);
 }
+
+void move_dad(Node *u, Node *v, Node **root, Node *external)
+{
+    if (u->dad == external)
+        (*root) = v;
+    else
+    {
+        if (u == u->dad->left)
+            u->dad->left = v;
+        else
+            u->dad->right = v;
+    }
+    v->dad = u->dad;
+}
+
+void remove_node(int value, Node **root, Node *external)
+{
+    Node *z = search(value, *root, external);
+    if (z != external)
+    {
+
+        Node *y = z;
+        Node *x;
+        Color old_color = y->color;
+        if (y->left == external)
+        {
+            x = z->right;
+            move_dad(z, z->right, &(*root), external);
+        }
+        else
+        {
+            if (y->right == external)
+            {
+                x = z->left;
+                move_dad(z, z->left, &(*root), external);
+            }
+            else
+            {
+                y = successor(z, external);
+                old_color = y->color;
+                x = y->right;
+                if (y->dad != z)
+                {
+                    move_dad(y, x, &(*root), external);
+                    y->right = z->right;
+                    y->dad->right = y;
+                }
+                move_dad(z, y, &(*root), external);
+                y->left = z->left;
+                y->left->dad = y;
+                y->color = z->color;
+            }
+        }
+
+        // if (old_color == BLACK)
+        // rotate_remove(x);
+    }
+    else
+        puts("Value not found");
+}
+
+Node *successor(Node *z, Node *external)
+{
+    Node *aux = z;
+    while (aux->left != external)
+    {
+        aux = aux->left;
+    }
+    return aux;
+}
+
+Node *search(int value, Node *root, Node *external)
+{
+    while (root != external)
+    {
+        if (value < root->value)
+            root = root->left;
+        else if (value > root->value)
+            root = root->right;
+        else
+            return root;
+    }
+    return external;
+}

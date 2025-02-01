@@ -31,3 +31,8 @@ int count_nodes(Node *root, Node *external, int *nodes);
 void RB_tests();
 void fill_vector(int *vector, int size);
 void free_RB(Node **root, Node *external);
+
+void move_dad(Node *u, Node *v, Node **root, Node *external);
+void remove_node(int value, Node **root, Node *external);
+Node *successor(Node *z, Node *external);
+Node *search(int value, Node *root, Node *external);
