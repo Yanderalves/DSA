@@ -4,7 +4,7 @@
 #include <time.h>
 #include <stdbool.h>
 
-void rotate(Node *z, Node **root, Node *external)
+void rotate_insert(Node *z, Node **root, Node *external)
 {
     while (z->dad->color == RED)
     {
@@ -143,7 +143,7 @@ void insert_RB(int value, Node **root, Node *external)
             y->left = z;
         else
             y->right = z;
-        rotate(z, &(*root), external);
+        rotate_insert(z, &(*root), external);
     }
 }
 
@@ -261,14 +261,14 @@ void remove_node(int value, Node **root, Node *external)
             }
             else
             {
-                y = successor(z, external);
+                y = successor(z->right, external);
                 old_color = y->color;
                 x = y->right;
                 if (y->dad != z)
                 {
                     move_dad(y, x, &(*root), external);
                     y->right = z->right;
-                    y->dad->right = y;
+                    y->right->dad = y;
                 }
                 move_dad(z, y, &(*root), external);
                 y->left = z->left;
@@ -277,8 +277,8 @@ void remove_node(int value, Node **root, Node *external)
             }
         }
 
-        // if (old_color == BLACK)
-        // rotate_remove(x);
+        if (old_color == BLACK)
+            rotate_remove(x, root, external);
     }
     else
         puts("Value not found");
@@ -306,4 +306,93 @@ Node *search(int value, Node *root, Node *external)
             return root;
     }
     return external;
+}
+
+void rotate_remove(Node *x, Node **root, Node *external)
+{
+    Node *w = NULL;
+    while (x != (*root) && x->color != RED)
+    {
+        if (x->dad->left == x)
+        {
+            w = x->dad->right;
+            if (w->color == RED)
+            {
+                x->dad->color = RED;
+                w->color = BLACK;
+                left_rotate(x->dad, &(*root), external);
+                w = x->dad->right;
+            }
+            else
+            {
+                if (w->right->color == RED && w->left->color == BLACK)
+                {
+                    w->color = RED;
+                    x = x->dad;
+                }
+                else
+                {
+                    if (w->left->color == RED)
+                    {
+                        w->left->color = BLACK;
+                        w->color = RED;
+                        right_rotate(x, &(*root), external);
+                        w = x->dad->right;
+                    }
+                    w->color = x->dad->color;
+                    w->right->color = BLACK;
+                    left_rotate(x->dad, &(*root), external);
+                    x = (*root);
+                }
+            }
+        }
+        else
+        {
+            w = x->dad->left;
+            if (w->color == RED)
+            {
+                x->dad->color = RED;
+                w->color = BLACK;
+                right_rotate(x->dad, &(*root), external);
+                w = x->dad->left;
+            }
+            else
+            {
+                if (w->left->color == RED && w->right->color == BLACK)
+                {
+                    w->color = RED;
+                    x = x->dad;
+                }
+                else
+                {
+                    if (w->right->color == RED)
+                    {
+                        w->right->color = BLACK;
+                        w->color = RED;
+                        left_rotate(x, &(*root), external);
+                        w = x->dad->right;
+                    }
+                    w->color = x->dad->color;
+                    w->left->color = BLACK;
+                    right_rotate(x->dad, &(*root), external);
+                    x = (*root);
+                }
+            }
+        }
+    }
+}
+
+int black_heighth(Node *root, Node *external)
+{
+    Node *pt = root;
+    int hl = -1, hr = -1;
+
+    if (pt->left != external)
+        hl = black_heighth(pt->left, external);
+
+    if (pt->right != external)
+        hr = black_heighth(pt->right, external);
+
+    if (pt->color == BLACK)
+        return hr > hl ? hr + 1 : hl + 1;
 }

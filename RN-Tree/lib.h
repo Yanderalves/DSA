@@ -36,3 +36,7 @@ void move_dad(Node *u, Node *v, Node **root, Node *external);
 void remove_node(int value, Node **root, Node *external);
 Node *successor(Node *z, Node *external);
 Node *search(int value, Node *root, Node *external);
+
+void rotate_remove(Node *x, Node **root, Node *external);
+
+int black_heighth(Node *root, Node *external);
