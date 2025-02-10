@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <stdbool.h>
 
 void rotate_insert(Node *z, Node **root, Node *external)
 {
@@ -243,37 +242,36 @@ void remove_node(int value, Node **root, Node *external)
     Node *z = search(value, *root, external);
     if (z != external)
     {
-
         Node *y = z;
         Node *x;
         Color old_color = y->color;
-        if (y->left == external)
+        if (z->left == external)
         {
             x = z->right;
             move_dad(z, z->right, &(*root), external);
         }
+        else if (z->right == external)
+        {
+            x = z->left;
+            move_dad(z, z->left, &(*root), external);
+        }
         else
         {
-            if (y->right == external)
+            y = successor(z->right, external);
+            old_color = y->color;
+            x = y->right;
+            if (y != z->right)
             {
-                x = z->left;
-                move_dad(z, z->left, &(*root), external);
+                move_dad(y, y->right, &(*root), external);
+                y->right = z->right;
+                y->right->dad = y;
             }
             else
             {
-                y = successor(z->right, external);
-                old_color = y->color;
-                x = y->right;
-                if (y->dad != z)
-                {
-                    move_dad(y, x, &(*root), external);
-                    y->right = z->right;
-                    y->right->dad = y;
-                }
+                x->dad = y;
                 move_dad(z, y, &(*root), external);
                 y->left = z->left;
                 y->left->dad = y;
-                y->color = z->color;
             }
         }
 
@@ -290,6 +288,16 @@ Node *successor(Node *z, Node *external)
     while (aux->left != external)
     {
         aux = aux->left;
+    }
+    return aux;
+}
+
+Node *antecessor(Node *z, Node *external)
+{
+    Node *aux = z;
+    while (aux->right != external)
+    {
+        aux = aux->right;
     }
     return aux;
 }
@@ -311,88 +319,97 @@ Node *search(int value, Node *root, Node *external)
 void rotate_remove(Node *x, Node **root, Node *external)
 {
     Node *w = NULL;
-    while (x != (*root) && x->color != RED)
+    while (x != (*root) && x->color == BLACK)
     {
         if (x->dad->left == x)
         {
             w = x->dad->right;
+
             if (w->color == RED)
             {
-                x->dad->color = RED;
                 w->color = BLACK;
+                x->dad->color = RED;
                 left_rotate(x->dad, &(*root), external);
                 w = x->dad->right;
             }
+            if (w->left->color == BLACK && w->right->color == BLACK)
+            {
+                w->color = RED;
+                x = x->dad;
+            }
             else
             {
-                if (w->right->color == RED && w->left->color == BLACK)
+                if (w->right->color == BLACK)
                 {
+                    w->left->color = BLACK;
                     w->color = RED;
-                    x = x->dad;
+                    right_rotate(w, &(*root), external);
+                    w = x->dad->right;
                 }
-                else
-                {
-                    if (w->left->color == RED)
-                    {
-                        w->left->color = BLACK;
-                        w->color = RED;
-                        right_rotate(x, &(*root), external);
-                        w = x->dad->right;
-                    }
-                    w->color = x->dad->color;
-                    w->right->color = BLACK;
-                    left_rotate(x->dad, &(*root), external);
-                    x = (*root);
-                }
+                w->color = x->dad->color;
+                x->dad->color = BLACK;
+                w->right->color = BLACK;
+                left_rotate(x->dad, &(*root), external);
+                x = (*root);
             }
         }
         else
         {
             w = x->dad->left;
+
             if (w->color == RED)
             {
-                x->dad->color = RED;
                 w->color = BLACK;
+                x->dad->color = RED;
                 right_rotate(x->dad, &(*root), external);
                 w = x->dad->left;
             }
+            if (w->right->color == BLACK && w->left->color == BLACK)
+            {
+                w->color = RED;
+                x = x->dad;
+            }
             else
             {
-                if (w->left->color == RED && w->right->color == BLACK)
+                if (w->left->color == BLACK)
                 {
+                    w->right->color = BLACK;
                     w->color = RED;
-                    x = x->dad;
+                    left_rotate(w, &(*root), external);
+                    w = x->dad->left;
                 }
-                else
-                {
-                    if (w->right->color == RED)
-                    {
-                        w->right->color = BLACK;
-                        w->color = RED;
-                        left_rotate(x, &(*root), external);
-                        w = x->dad->right;
-                    }
-                    w->color = x->dad->color;
-                    w->left->color = BLACK;
-                    right_rotate(x->dad, &(*root), external);
-                    x = (*root);
-                }
+                w->color = x->dad->color;
+                x->dad->color = BLACK;
+                w->left->color = BLACK;
+                right_rotate(x->dad, &(*root), external);
+                x = (*root);
             }
         }
     }
+    (*root)->color = BLACK;
 }
 
-int black_heighth(Node *root, Node *external)
+int black_height(Node *root, Node *external)
 {
-    Node *pt = root;
-    int hl = -1, hr = -1;
+    if (root == external)
+        return 0;
 
-    if (pt->left != external)
-        hl = black_heighth(pt->left, external);
+    int hl = black_height(root->left, external);
+    int hr = black_height(root->right, external);
 
-    if (pt->right != external)
-        hr = black_heighth(pt->right, external);
+    if (root->color == BLACK)
+        return (hl > hr ? hl : hr) + 1;
+    else
+        return hl > hr ? hl : hr;
+}
 
-    if (pt->color == BLACK)
-        return hr > hl ? hr + 1 : hl + 1;
+bool is_RB_tree(Node *root, Node *external)
+{
+    if (root == external)
+        return true;
+
+    int black_height_left = black_height(root->left, external);
+    int black_height_right = black_height(root->right, external);
+
+    return black_height_left == black_height_right;
 }
