@@ -176,7 +176,7 @@ void fill_vector(int *vector, int size)
 {
 
     int i, j;
-    for (i = 0, j = 0; i < _10K; i++, j += (rand() % 100) + 1)
+    for (i = 0, j = 0; i < size; i++, j += (rand() % 100) + 1)
     {
         vector[i] = j;
     }
@@ -277,6 +277,8 @@ void remove_node(int value, Node **root, Node *external)
 
         if (old_color == BLACK)
             rotate_remove(x, root, external);
+
+        free(z);
     }
     else
         puts("Value not found");
@@ -412,4 +414,32 @@ bool is_RB_tree(Node *root, Node *external)
     int black_height_right = black_height(root->right, external);
 
     return black_height_left == black_height_right;
+}
+
+void small_RB_tests()
+{
+
+    printf("========== Small Case Test: ==========\n");
+
+    int nodes = 0;
+    Node *external = create_external();
+    Node *root = external;
+    int *vector = calloc(10, sizeof(int));
+
+    fill_vector(vector, 10);
+
+    for (int j = 0; j < 10; j++)
+    {
+        insert_RB(vector[j], &root, external);
+    }
+
+    count_nodes(root, external, &nodes);
+
+    printf("Number of nodes: %d\n", nodes);
+
+    puts("Print In Pre Order: ");
+    pre_order(root, external);
+
+    free_RB(&root, external);
+    free(vector);
 }
