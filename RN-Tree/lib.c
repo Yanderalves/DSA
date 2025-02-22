@@ -60,7 +60,7 @@ void left_rotate(Node *x, Node **root, Node *external)
     Node *y = x->right;
     x->right = y->left;
     if (y->left != external)
-        y->left = x;
+        y->left->dad = x;
     y->dad = x->dad;
     if (x->dad == external)
         *root = y;
@@ -77,7 +77,7 @@ void right_rotate(Node *x, Node **root, Node *external)
     Node *y = x->left;
     x->left = y->right;
     if (y->right != external)
-        y->right = x;
+        y->right->dad = x;
 
     y->dad = x->dad;
 
@@ -185,9 +185,8 @@ void fill_vector(int *vector, int size)
 void RB_tests()
 {
 
-    for (int i = 0; i < _1K; i++)
+    for (int i = 0; i < 10; i++)
     {
-        puts("=====================================");
         printf("========== Tree number: %d ==========\n", i + 1);
 
         int nodes = 0;
@@ -204,8 +203,24 @@ void RB_tests()
 
         count_nodes(root, external, &nodes);
 
-        printf(">>>>>> Number of nodes: %d <<<<<<<\n", nodes);
+        printf("Number of nodes after insertions: %d \n", nodes);
+        puts("");
+
+        for (int j = 0; j < _1K; j++)
+        {
+            remove_node(vector[j], &root, external);
+        }
+
+        nodes = 0;
+        count_nodes(root, external, &nodes);
+
+        printf("Number of nodes after removings: %d\n", nodes);
+
+        printf("Is Red black Tree: %s\n", is_RB_tree(root, external) ? "True" : "False");
+
         puts("=====================================");
+
+        puts("");
         puts("");
 
         free_RB(&root, external);
@@ -260,19 +275,21 @@ void remove_node(int value, Node **root, Node *external)
             y = successor(z->right, external);
             old_color = y->color;
             x = y->right;
-            if (y != z->right)
+
+            if (y->dad == z)
+                x->dad = y;
+            else
             {
                 move_dad(y, y->right, &(*root), external);
+
                 y->right = z->right;
                 y->right->dad = y;
             }
-            else
-            {
-                x->dad = y;
-                move_dad(z, y, &(*root), external);
-                y->left = z->left;
-                y->left->dad = y;
-            }
+
+            move_dad(z, y, &(*root), external);
+            y->left = z->left;
+            y->left->dad = y;
+            y->color = z->color;
         }
 
         if (old_color == BLACK)
