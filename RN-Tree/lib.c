@@ -185,7 +185,7 @@ void fill_vector(int *vector, int size)
 void RB_tests()
 {
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < _1K; i++)
     {
         printf("========== Tree number: %d ==========\n", i + 1);
 
@@ -196,15 +196,16 @@ void RB_tests()
 
         fill_vector(vector, _10K);
 
+        printf("Initial number of nodes: %d\n\n", nodes);
+
         for (int j = 0; j < _10K; j++)
         {
             insert_RB(vector[j], &root, external);
         }
 
         count_nodes(root, external, &nodes);
-
-        printf("Number of nodes after insertions: %d \n", nodes);
-        puts("");
+        printf("Total nodes after insertions: %d\n", nodes);
+        printf("Is Red-Black Tree after insertions? %s\n\n", is_RB_tree(root, external) ? "Yes" : "No");
 
         for (int j = 0; j < _1K; j++)
         {
@@ -213,15 +214,10 @@ void RB_tests()
 
         nodes = 0;
         count_nodes(root, external, &nodes);
+        printf("Total nodes after deletions: %d\n", nodes);
+        printf("Is Red-Black Tree after deletions? %s\n", is_RB_tree(root, external) ? "Yes" : "No");
 
-        printf("Number of nodes after removings: %d\n", nodes);
-
-        printf("Is Red black Tree: %s\n", is_RB_tree(root, external) ? "True" : "False");
-
-        puts("=====================================");
-
-        puts("");
-        puts("");
+        puts("\n=====================================\n");
 
         free_RB(&root, external);
         free(vector);
@@ -307,16 +303,6 @@ Node *successor(Node *z, Node *external)
     while (aux->left != external)
     {
         aux = aux->left;
-    }
-    return aux;
-}
-
-Node *antecessor(Node *z, Node *external)
-{
-    Node *aux = z;
-    while (aux->right != external)
-    {
-        aux = aux->right;
     }
     return aux;
 }
@@ -435,27 +421,35 @@ bool is_RB_tree(Node *root, Node *external)
 
 void small_RB_tests()
 {
-
-    printf("========== Small Case Test: ==========\n");
-
     int nodes = 0;
     Node *external = create_external();
     Node *root = external;
-    int *vector = calloc(10, sizeof(int));
+    int *vector = calloc(_100, sizeof(int));
 
-    fill_vector(vector, 10);
+    fill_vector(vector, _100);
 
-    for (int j = 0; j < 10; j++)
+    printf("Initial number of nodes: %d\n\n", nodes);
+
+    for (int j = 0; j < _100; j++)
     {
         insert_RB(vector[j], &root, external);
     }
 
     count_nodes(root, external, &nodes);
+    printf("Total nodes after insertions: %d\n", nodes);
+    printf("Is Red-Black Tree after insertions? %s\n\n", is_RB_tree(root, external) ? "Yes" : "No");
 
-    printf("Number of nodes: %d\n", nodes);
+    for (int j = 0; j < _10; j++)
+    {
+        remove_node(vector[j], &root, external);
+    }
 
-    puts("Print In Pre Order: ");
-    pre_order(root, external);
+    nodes = 0;
+    count_nodes(root, external, &nodes);
+    printf("Total nodes after deletions: %d\n", nodes);
+    printf("Is Red-Black Tree after deletions? %s\n", is_RB_tree(root, external) ? "Yes" : "No");
+
+    puts("\n=====================================\n");
 
     free_RB(&root, external);
     free(vector);

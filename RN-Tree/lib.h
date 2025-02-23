@@ -32,12 +32,12 @@ void move_dad(Node *u, Node *v, Node **root, Node *external);
 void rotate_remove(Node *x, Node **root, Node *external);
 
 // ========================== Funções de Rotação ==========================
+
 void left_rotate(Node *x, Node **root, Node *external);
 void right_rotate(Node *x, Node **root, Node *external);
 
 // ========================== Funções Auxiliares ==========================
 Node *successor(Node *z, Node *external);
-Node *antecessor(Node *z, Node *external);
 Node *search(int value, Node *root, Node *external);
 int count_nodes(Node *root, Node *external, int *nodes);
 void free_RB(Node **root, Node *external);
