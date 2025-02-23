@@ -5,7 +5,7 @@
 int main()
 {
     // RB_tests();
-    // small_RB_tests();
+    small_RB_tests();
 
     // Node *external = create_external();
     // Node *root = external;

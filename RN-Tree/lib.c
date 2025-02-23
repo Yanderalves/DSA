@@ -449,6 +449,10 @@ void small_RB_tests()
     printf("Total nodes after deletions: %d\n", nodes);
     printf("Is Red-Black Tree after deletions? %s\n", is_RB_tree(root, external) ? "Yes" : "No");
 
+    // puts("Print In Pre Order:");
+
+    // pre_order(root, external);
+
     puts("\n=====================================\n");
 
     free_RB(&root, external);
